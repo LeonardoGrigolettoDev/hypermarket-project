@@ -1,0 +1,50 @@
+version: "3"
+
+services:
+  frontend: 
+    build: frontend/
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+    tty: true
+    depends_on:
+      - api
+    links:
+      - api
+    environment:
+      REACT_APP_API_PORT: "http://localhost:3002"
+  api:
+    build: backend/
+    ports:
+      - "3002:3002"
+    volumes:
+      - ./backend:/app
+    tty: true
+    restart: 
+      on-failure
+    environment:
+      JWT_SECRET: jwt_secret
+      API_PORT: 3002
+      DB_USER: root
+      DB_PASS: secret
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: hypermarket
+    depends_on:
+      - db
+    links:
+      - db
+  db:
+    image: mysql:8.0.21
+    ports:
+      - 3306:3306
+      - 33060:33060
+    tty: true
+    restart:
+      always
+    environment:
+      MYSQL_DATABASE: hypermarket
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_USER: root
+      MYSQL_PASSWORD: secret
