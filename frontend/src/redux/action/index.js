@@ -1,0 +1,1 @@
+export const addTokenAction = (payload) => ({ type: 'setToken', payload});
